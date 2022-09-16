@@ -1,0 +1,15 @@
+version: "3.5"
+
+services:
+  ansible-semaphore:
+    image: ansiblesemaphore/semaphore:${IMAGE_TAG:-latest}
+    container_name: ansible-semaphore
+    restart: always
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - ../../stack.env
+    labels:
+      - "diun.enable=true"
+    volumes:
+      - ${HOST_DATA_PATH}:/data

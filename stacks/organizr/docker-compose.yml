@@ -1,0 +1,17 @@
+version: '3.5'
+
+services:
+  organizr:
+    image: organizr/organizr:${IMAGE_TAG:-latest}
+    container_name: organizr
+    restart: always
+    ports:
+      - "${PORT}:80"
+    volumes:
+      - organizr:/config
+    env_file:
+      - ../../stack.env
+
+volumes:
+  organizr:
+    external: true

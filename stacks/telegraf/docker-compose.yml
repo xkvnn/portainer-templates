@@ -1,0 +1,16 @@
+version: '3.5'
+
+services:
+  telegraf:
+    image: telegraf:${IMAGE_TAG:-alpine}
+    container_name: telegraf
+    restart: always
+    volumes:
+      - ${TELEGRAF_CONFIG_PATH}:/etc/telegraf/telegraf.conf
+    env_file:
+      - ../../stack.env
+
+networks:
+  default:
+    external:
+      name: ${NETWORK_NAME}

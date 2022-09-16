@@ -1,0 +1,28 @@
+version: '3.5'
+
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:${IMAGE_TAG:-latest}
+    container_name: uptime-kuma
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - uptime-kuma:/app/data
+    env_file:
+      - ../../stack.env
+    labels:
+      - "traefik.enable=${TRAEFIK_ENABLE}"
+      - "traefik.http.routers.uptime-kuma.rule=Host(`${TRAEFIK_DOMAIN}`)"
+      - "traefik.http.services.uptime-kuma.loadBalancer.server.port=${PORT}"
+      - "traefik.http.routers.uptime-kuma.entrypoints=${TRAEFIK_ROUTERS_ENTRYPOINTS}"
+      - "traefik.http.routers.uptime-kuma.tls.certresolver=${TRAEFIK_ROUTERS_CERTRESOLVER}"
+
+volumes:
+  uptime-kuma:
+    external: true
+
+networks:
+  default:
+    external:
+      name: ${NETWORK_NAME}

@@ -1,0 +1,52 @@
+version: '3.5'
+
+services:
+  traefik:
+    image: traefik:${IMAGE_TAG:-latest}
+    container_name: traefik
+    restart: always
+    command:
+      - "--log.level=${LOG_LEVEL}"
+      - "--api.dashboard=${API_DASHBOARD}"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.myresolver.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--accesslog.filepath=/log/access.log"
+    labels:
+      - "traefik.enable=${TRAEFIK_ENABLE}"
+      - "traefik.http.services.dashboard.loadbalancer.server.port=8080"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=myresolver"
+      - "traefik.http.routers.dashboard.middlewares=basic-auth"
+
+      - "traefik.http.middlewares.basic-auth.basicauth.users=${TRAEFIK_HTTP_MIDDLEWARES_BASIC_AUTH_USERS}"
+      - "traefik.http.middlewares.known-ips.ipwhitelist.sourceRange=${TRAEFIK_HTTP_MIDDLEWARES_KNOWN_IPS_SOURCERANGE}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-letsencrypt:/letsencrypt
+      - traefik-log:/log
+    ports:
+      - 80:80
+      - 443:443
+    env_file:
+      - ../../stack.env
+
+volumes:
+  traefik-letsencrypt:
+    external: true
+  traefik-log:
+    external: true
+
+networks:
+  default:
+    external:
+      name: ${NETWORK_NAME}

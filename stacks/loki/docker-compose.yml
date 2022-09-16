@@ -1,0 +1,34 @@
+version: "3.5"
+
+services:
+  loki:
+    image: grafana/loki:${IMAGE_TAG:-latest}
+    container_name: loki
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    command: -config.file=${CONTAINER_CONFIG_FILE_PATH}
+    volumes:
+      - ${HOST_CONFIG_FILE_PATH}:${CONTAINER_CONFIG_FILE_PATH}
+      - ${HOST_PER_TENANT_OVERRIDE_CONFIG_PATH}:${CONTAINER_PER_TENANT_OVERRIDE_CONFIG_PATH}
+      - loki:/loki
+    env_file:
+      - ../../stack.env
+    labels:
+      - "traefik.enable=${TRAEFIK_ENABLE}"
+      - "traefik.http.services.loki.loadbalancer.server.port=${PORT}"
+      - "traefik.http.routers.loki.service=loki"
+      - "traefik.http.routers.loki.rule=Host(`${TRAEFIK_DOMAIN}`)"
+      - "traefik.http.routers.loki.entrypoints=${TRAEFIK_ROUTERS_ENTRYPOINTS}"
+      - "traefik.http.routers.loki.tls.certresolver=${TRAEFIK_ROUTERS_CERTRESOLVER}"
+      - "traefik.http.routers.loki.middlewares=${TRAEFIK_ROUTERS_MIDDLEWARES}"
+      - "traefik.http.middlewares.loki-basic-auth.basicauth.users=${TRAEFIK_MIDDLEWARES_BASICAUTH}"
+
+volumes:
+  loki:
+    external: true
+
+networks:
+  default:
+    external:
+      name: ${NETWORK_NAME}

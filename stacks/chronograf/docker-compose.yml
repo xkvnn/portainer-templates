@@ -1,0 +1,22 @@
+version: '3.5'
+
+services:
+  chronograf:
+    image: chronograf:${IMAGE_TAG:-alpine}
+    container_name: chronograf
+    volumes:
+      - chronograf:/var/lib/chronograf
+      - ${HTPASSWD_CONFIG_PATH}:${HTPASSWD}:ro
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - ../../stack.env
+
+volumes:
+  chronograf:
+    external: true
+
+networks:
+  default:
+    external:
+      name: ${NETWORK_NAME}

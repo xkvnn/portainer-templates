@@ -1,0 +1,19 @@
+version: "3.5"
+
+services:
+  diun:
+    image: crazymax/diun:${IMAGE_TAG:-latest}
+    container_name: diun
+    command: serve
+    volumes:
+      - "diun:/data"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    env_file:
+      - ../../stack.env
+    labels:
+      - "diun.enable=true"
+    restart: always
+
+volumes:
+  diun:
+    external: true

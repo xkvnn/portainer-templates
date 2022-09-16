@@ -1,0 +1,15 @@
+{
+  "version": "2",
+  "templates": [
+    {
+      "type": 3,
+      "title": "phpmyadmin",
+      "logo": "https://www.phpmyadmin.net/static/images/logo.png",
+      "repository": {
+        "url": "https://github.com/xkvnn/portainer-templates.git",
+        "stackfile": "stacks/phpmyadmin/docker-compose.yml"
+      },
+      "platform": "linux"
+    }
+  ]
+}

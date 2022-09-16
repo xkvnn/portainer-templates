@@ -1,0 +1,13 @@
+version: "3.5"
+
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:${IMAGE_TAG:-latest}
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - ${PORT}:80
+    env_file:
+      - ../../stack.env
+    labels:
+      - "diun.enable=true"
