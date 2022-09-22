@@ -1,0 +1,20 @@
+version: "3.5"
+
+services:
+  gitea:
+    image: gitea/gitea:${IMAGE_TAG:-latest}
+    container_name: gitea
+    restart: always
+    ports:
+      - ${HTTP_PORT}:${HTTP_PORT}
+      - ${SSH_PORT}:${SSH_PORT}
+    env_file:
+      - ../../stack.env
+    volumes:
+      - gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+volumes:
+  gitea:
+    external: true
