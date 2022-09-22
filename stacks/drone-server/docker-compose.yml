@@ -9,7 +9,6 @@ services:
       - ${PORT}:80
     volumes:
       - "drone:/var/lib/drone/"
-      - "/var/run/docker.sock:/var/run/docker.sock"
     env_file:
       - ../../stack.env
     labels:
