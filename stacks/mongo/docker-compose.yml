@@ -1,0 +1,17 @@
+version: "3.5"
+
+services:
+  mongo:
+    image: mongo:${IMAGE_TAG:-latest}
+    container_name: mongo
+    restart: always
+    volumes:
+      - mongo:/data/db
+    ports:
+      - ${PORT}:27017
+    env_file:
+      - ../../stack.env
+
+volumes:
+  mongo:
+    external: true
