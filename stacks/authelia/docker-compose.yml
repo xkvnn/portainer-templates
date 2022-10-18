@@ -1,0 +1,13 @@
+version: "3.5"
+
+services:
+  authelia:
+    image: authelia/authelia:${IMAGE_TAG:-latest}
+    container_name: authelia
+    restart: always
+    volumes:
+      - ${HOST_CONFIG_DIR}:/config
+    ports:
+      - ${PORT}:9091
+    env_file:
+      - ../../stack.env
