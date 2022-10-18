@@ -1,0 +1,17 @@
+version: "3.5"
+
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:${IMAGE_TAG:-latest}
+    container_name: nginx-proxy-manager
+    restart: always
+    ports:
+      - 80:80
+      - ${PORT}:81
+      - 443:443
+    volumes:
+      - ${HOST_DATA_DIR}:/data
+      - ${HOST_LETSENCRYPT_DIR}:/etc/letsencrypt
+    env_file:
+      - ../../stack.env
+    network_mode: host
