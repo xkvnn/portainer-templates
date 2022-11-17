@@ -1,0 +1,17 @@
+version: "3.5"
+
+services:
+  mysql:
+    image: mysql:${IMAGE_TAG:-latest}
+    container_name: mysql
+    restart: always
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - ${PORT}:3306
+    env_file:
+      - ../../stack.env
+
+volumes:
+  mysql:
+    external: true
