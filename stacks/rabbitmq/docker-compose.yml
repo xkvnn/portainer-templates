@@ -1,0 +1,18 @@
+version: "3.5"
+
+services:
+  rabbitmq:
+    image: rabbitmq:${IMAGE_TAG:-latest}
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - ${PORT}:5672
+      - ${UI_PORT}:15672
+    env_file:
+      - ../../stack.env
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq/
+
+volumes:
+  rabbitmq:
+    external: true
